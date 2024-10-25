@@ -7,6 +7,7 @@ CERT_PATH="/etc/ssl/certs"
 KEY_PATH="/etc/ssl/private"
 PGDATA_PATH="/var/lib/postgresql/data"
 
+
 copy_certs_to_container() {
   for file in "${CERT_FILES[@]}"; do
       docker cp "$CERT_DIR/$file" "$CONTAINER_NAME:$CERT_PATH/$file"
