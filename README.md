@@ -1,55 +1,17 @@
 # Debichыы - Vault Main
 
-Мы не успели дописать автоматическое создание сертификатов, поэтому создать надо вручную:
-
-Генерация сертификатов 
+1) Проверьте, что у Вас установлен докер, а также openssl. В случае проблемы выполнения кода, сравните попробуйте полнсотью повторить эти версии
 
 ```bash
-cd cert_postgresql
-openssl genpkey -algorithm RSA -out ca-postgresql.key
-openssl req -x509 -new -nodes -key ca-postgresql.key -days 3650 -out ca-postgresql.crt -subj "/CN=MyPostgresCA"
-
-
-openssl genpkey -algorithm RSA -out postgresql-server.key
-openssl req -new -key postgresql-server.key -out postgresql-server.csr -subj "/CN=postgresql-server"
-openssl x509 -req -in postgresql-server.csr -CA ca-postgresql.crt -CAkey ca-postgresql.key -CAcreateserial -out postgresql-server.crt -days 365
-
-openssl genpkey -algorithm RSA -out postgresql-client.key
-openssl req -new -key postgresql-client.key -out postgresql-client.csr -subj "/CN=postgresql-client"
-openssl x509 -req -in postgresql-client.csr -CA ca-postgresql.crt -CAkey ca-postgresql.key -CAcreateserial -out postgresql-client.crt -days 365
+sergeyshkviro@sergeyshkviro-MS-7D48:~/Документы/vault_hack/dvault-all$ openssl version && docker --version
+OpenSSL 3.0.2 15 Mar 2022 (Library: OpenSSL 3.0.2 15 Mar 2022)
+Docker version 26.1.4, build 5650f9b
 ```
+
+2) Проверьте, что у файла `./hello.sh` имеется флаг +x и выполните:
 
 ```bash
-cd ..
-sudo chown postgres:postgres ./cert_postgresql/*
-
-cd /redis/cert_redis
-openssl genpkey -algorithm RSA -out ca.key
-openssl req -x509 -new -nodes -key ca.key -days 3650 -out ca.crt -subj "/CN=MyRedisCA"
-
-
-openssl genpkey -algorithm RSA -out redis-server.key
-openssl req -new -key redis-server.key -out redis-server.csr -subj "/CN=redis-server"
-openssl x509 -req -in redis-server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out redis-server.crt -days 365
-
-openssl genpkey -algorithm RSA -out redis-client.key
-openssl req -new -key redis-client.key -out redis-client.csr -subj "/CN=redis-client"
-openssl x509 -req -in redis-client.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out redis-client.crt -days 365
+./hello.sh
 ```
 
-```bash
-sudo chown redis:redis ./cert_redis/*
-```
-
-После поднимаем все сервисы
-
-
-
-```bash
-docker compose up -d
-```
-
-
-Также, выполним `./test_postgresql.sh` для внесения сертификатов в postgres. 
-
-На выходе получаем готовый backend.
+Данная команда создаст необходимые сертификаты, а также запустит контейнеры. После окончания работы скрипта все соеденения с БД будут по SSL соеденению. Создастся контейнер в бэкендом `handle_vault`.

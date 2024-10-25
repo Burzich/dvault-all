@@ -28,22 +28,25 @@ set_permissions() {
 }
 
 enable_ssl_in_postgresql() {
-  echo "Включение SSL в конфигурации PostgreSQL..."
-
   docker exec $CONTAINER_NAME bash -c "echo \"ssl = on\" >> $PGDATA_PATH/postgresql.conf"
-
+  sleep 1
   docker exec $CONTAINER_NAME bash -c "echo \"ssl_ca_file = '/etc/ssl/certs/ca-postgresql.crt'\" >> $PGDATA_PATH/postgresql.conf"
+  sleep 1
   docker exec $CONTAINER_NAME bash -c "echo \"ssl_cert_file = '/etc/ssl/certs/postgresql-server.crt'\" >> $PGDATA_PATH/postgresql.conf"
+  sleep 1
   docker exec $CONTAINER_NAME bash -c "echo \"ssl_key_file = '/etc/ssl/certs/postgresql-server.key'\" >> $PGDATA_PATH/postgresql.conf"
+  sleep 1
 
 
 #  docker exec $CONTAINER_NAME bash -c \"echo \"ssl_cert_file = '$CERT_PATH/postgresql-server.crt'\" >> $PGDATA_PATH/postgresql.conf\"
 #  docker exec $CONTAINER_NAME bash -c \"echo \"ssl_key_file = '$KEY_PATH/postgresql-server.key'\" >> $PGDATA_PATH/postgresql.conf\"
 
   docker exec $CONTAINER_NAME bash -c "echo \"hostssl all all 0.0.0.0/0 cert\" >> $PGDATA_PATH/pg_hba.conf"
+  sleep 1
 }
 
 restart_container() {
+  sleep 3
   docker restart $CONTAINER_NAME
 }
 
