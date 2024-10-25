@@ -35,9 +35,13 @@ services:
       CERT_DB_PATH_DVAULT: "/etc/handle_dvault/certs"
       CERT_REDIS_PATH_DVAULT: "/etc/handle_dvault/certs_redis"
     volumes:
-      - "./certs_postgresql/:/etc/handle_dvault/certs"
-      - "./certs_redis/:/etc/handle_dvault/certs_redis"
-      - "/tmp/dvault:/tmp/"
+      - ./cert_postgresql/ca-postgresql.crt:/etc/handle_dvault/certs/ca-postgresql.crt:ro
+      - ./cert_postgresql/postgresql-server.key:/etc/handle_dvault/certs/postgresql-server.key:ro
+      - ./cert_postgresql/postgresql-server.crt:/etc/handle_dvault/certs/postgresql-server.crt:ro
+      - ./cert_redis/ca.crt:/etc/handle_dvault/certs_redis/ca.crt:ro
+      - ./cert_redis/redis-server.ctr:/etc/handle_dvault/certs_redis/redis-server.ctr:ro
+      - ./cert_redis/redis-server.key:/etc/handle_dvault/certs_redis/redis-server.key:ro
+      - /tmp/dvault:/tmp
 
 volumes:
   postgis-db-volume:
